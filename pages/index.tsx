@@ -1,4 +1,6 @@
-import { Button, Grid, Stack, Text, Link, Flex, Image } from '@chakra-ui/react';
+@ts-ignore
+import { Button, Grid, Stack, Text, Link, Flex, Image} from '@chakra-ui/react';
+import { ExternalLinkIcon } from "@chakra-ui/icons";
 import api from 'comidasya/product/api';
 import { Product } from 'comidasya/product/types';
 import { GetStaticProps } from 'next';
@@ -20,7 +22,7 @@ const Home: React.FC<Props> = ({ products }) => {
       <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
         {products.map((product) => (
           <Stack borderRadius="md" padding={4} backgroundColor="gray.100" key={product.id}>
-            <Image  maxHeight={200} objectFit="cover" src={product.imagen} />
+            <Image maxHeight={200} objectFit="cover" src={product.imagen} />
             <Text>{product.producto}</Text>
             <Text fontWeight="500">$ {product.precio}</Text>
             <Button colorScheme="primary" onClick={() => setCart((cart) => cart.concat(product))}>Agregar al pedido</Button>
@@ -29,7 +31,15 @@ const Home: React.FC<Props> = ({ products }) => {
       </Grid>
       {Boolean(cart.length) && (
         <Flex position="sticky" bottom={12} justifyContent="center" alignItems="center">
-          <Button isExternal as={Link} colorScheme="green" href={`https://wa.me/3483521462?text=${encodeURIComponent(text)}`}> Completar pedido ({cart.length} productos) </Button>
+          <Button
+            colorScheme="green"
+            rightIcon={<ExternalLinkIcon />}
+            as={Link}
+            isExternal
+            href={`https://wa.me/3483521462?text=${encodeURIComponent(text)}`}
+          >
+            Completar pedido ({cart.length} productos)
+          </Button>
         </Flex>
       )}
       {Boolean(cart.length) &&
