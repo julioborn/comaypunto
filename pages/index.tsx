@@ -11,8 +11,8 @@ interface Props {
 const Home: React.FC<Props> = ({ products }) => {
   const [cart, setCart] = React.useState<Product[]>([])
   const text = React.useMemo(() => cart
-    .reduce((message, product) => message.concat(`${product.producto}: $${product.precio} |\n`), ``)
-    .concat(`\nTOTAL: $${cart.reduce((total, product) => total + product.precio, 0)}`),
+    .reduce((message, product) => message.concat(`* ${product.producto}: $${product.precio}\n`), ``)
+    .concat(`- Total: $${cart.reduce((total, product) => total + product.precio, 0)}`),
     [cart])
 
   return (

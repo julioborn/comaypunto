@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChakraProvider, Container, VStack, Image, Heading, Box, Divider } from '@chakra-ui/react'
+import { ChakraProvider, Container, VStack, Image, Box, Divider } from '@chakra-ui/react'
 import { AppProps } from 'next/app'
 import theme from 'comidasya/theme'
 
@@ -10,7 +10,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       {/* @ts-ignore */}
       <Container backgroundColor="white" boxShadow="md" maxWidth="container.xl" padding={4} borderRadius="sm" >
         <VStack>
-          <Image width={300} src="https://res.cloudinary.com/dwz4lcvya/image/upload/v1680275161/logosintext_tkhex9.png"></Image>
+          <Image width={350} src="https://res.cloudinary.com/dwz4lcvya/image/upload/v1680303235/logocomidasya_xyf5qh.png"></Image>
         </VStack>
         <Divider marginY={3} />
         <Component {...pageProps} />
