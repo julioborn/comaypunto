@@ -21,7 +21,7 @@ const Home: React.FC<Props> = ({ products }) => {
       <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
         {products.map((product) => (
           <Stack borderRadius="md" padding={4} backgroundColor="yellow.100" key={product.id}>
-            <Image maxHeight={250} borderRadius={5} objectFit="cover" src={product.imagen} />
+            <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} />
             <Text fontWeight="700">{product.producto}</Text>
             <Text fontWeight="300">{product.descripcion}</Text>
             <Text fontWeight="500">$ {product.precio}</Text>
