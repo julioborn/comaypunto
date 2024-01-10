@@ -8,9 +8,9 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
     <ChakraProvider theme={theme}>
       <Box padding={4}>
       {/* @ts-ignore */}
-      <Container backgroundColor="white" boxShadow="md" maxWidth="container.xl" padding={4} borderRadius="sm" >
+      <Container backgroundColor="black" boxShadow="md" maxWidth="container.xl" padding={4} borderRadius="sm" >
         <VStack>
-          <Image width={350} src="https://res.cloudinary.com/dwz4lcvya/image/upload/v1680303235/logocomidasya_xyf5qh.png"></Image>
+          <Image width={300} src="https://res.cloudinary.com/dwz4lcvya/image/upload/v1704900399/don-logo_lp1kvo.png"></Image>
         </VStack>
         <Divider marginY={3} />
         <Component {...pageProps} />
