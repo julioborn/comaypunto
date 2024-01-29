@@ -3,11 +3,11 @@ import api from 'comidasya/product/api';
 import { Product } from 'comidasya/product/types';
 import { GetStaticProps } from 'next';
 import React, { useRef } from 'react';
-import Swal from 'sweetalert2';
 import { Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
 import { PiNotePencilBold } from "react-icons/pi";
 import { FiShoppingCart } from "react-icons/fi";
 import { MdDeleteForever } from "react-icons/md";
+import Swal from 'sweetalert2'
 
 interface Props {
   products: Product[];
@@ -35,41 +35,51 @@ const Home: React.FC<Props> = ({ products }) => {
   );
 
   return (
-    <Stack spacing={6}>
-      <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
+    <Stack>
+      <Grid gridGap={6} templateColumns="repeat(auto-fit, minmax(150px, 1fr))">
         {products.map((product) => (
-          <Stack borderRadius="md" padding={4} backgroundColor="yellow.200" key={product.id}>
+          <Stack display="flex" borderRadius="md" padding={4} backgroundColor="yellow.200" key={product.id}>
             <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
             <Text fontWeight="700">{product.producto}</Text>
             <Text fontWeight="400">{product.descripcion}</Text>
             <Text fontWeight="500">$ {product.precio}</Text>
-            <Button colorScheme="primary" onClick={() => addToCart(product)}>
-              Agregar al pedido
+            {/* @ts-ignore */}
+            <Button
+              colorScheme="primary"
+              onClick={() => {addToCart(product);
+                Swal.fire({
+                  title: "Producto agregado",
+                  text: "Puedes verlo en el carrito",
+                  icon: "success",
+                  timer: 2000
+                })
+              }}>
+              Agregar
             </Button>
           </Stack>
         ))}
       </Grid>
 
       {Boolean(cart.length) && (
-        <Flex position="fixed" top={0} right={6} justifyContent="center" alignItems="center">
-          <Button width="60px" height="60px" borderRadius="30px" colorScheme="green" onClick={onOpen}>
+        <Flex position="fixed" top={4} right={6} justifyContent="center" alignItems="center">
+          <Button width="90px" height="90px" borderRadius="full" colorScheme="green" onClick={onOpen}>
             <Box display="flex" gap="5px">
-              <FiShoppingCart size="20px" />
-              {cart.length}
+              <FiShoppingCart size="30px" />
+              <Text fontSize="25px"> {cart.length} </Text>
             </Box>
           </Button>
         </Flex>
       )}
 
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} finalFocusRef={btnRef}>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose} finalFocusRef={btnRef} size="xl">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerBody backgroundColor="yellow.500">
-            <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="lg" fontWeight="bold" marginBottom={2}>
-              Pedido <PiNotePencilBold size="22px" />
-            </Text>
-            <Box borderRadius="md" padding={4} backgroundColor="gray.100">
+            <Box marginTop="35px" display="flex" flexDirection="column" borderRadius="md" padding={4} backgroundColor="gray.100">
+              <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="lg" fontWeight="bold" marginBottom={2}>
+                Pedido <PiNotePencilBold size="22px" />
+              </Text>
               {cart.map((product) => (
                 <Box marginTop="8px" key={product.id}>
                   <Flex key={product.id} justifyContent="space-between" alignItems="center">
@@ -88,6 +98,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Flex>
                 </Box>
               ))}
+              {/* @ts-ignore */}
               <Flex justifyContent="center" marginTop={4}>
                 {cart.length > 0 ? (
                   <Button colorScheme="red" size="sm" width="80%" onClick={() => setCart([])}>
@@ -113,17 +124,6 @@ const Home: React.FC<Props> = ({ products }) => {
                     </Button>
                   </Flex>
                 )}
-                {/*Boolean(cart.length) && (
-                <Flex justifyContent="center" alignItems="center">
-                  <Button 
-                  size="sm"
-                  width="268px" 
-                  colorScheme="red" 
-                  onClick={() => setCart([])}>
-                    Eliminar pedido
-                  </Button>
-                </Flex>
-              )*/}
               </Box>
             </Box>
           </DrawerBody>
