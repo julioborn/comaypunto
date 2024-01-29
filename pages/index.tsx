@@ -39,7 +39,7 @@ const Home: React.FC<Props> = ({ products }) => {
       <Grid gridGap={6} templateColumns="repeat(auto-fill, minmax(240px, 1fr))">
         {products.map((product) => (
           <Stack borderRadius="md" padding={4} backgroundColor="yellow.200" key={product.id}>
-            <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} />
+            <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
             <Text fontWeight="700">{product.producto}</Text>
             <Text fontWeight="400">{product.descripcion}</Text>
             <Text fontWeight="500">$ {product.precio}</Text>
@@ -71,7 +71,7 @@ const Home: React.FC<Props> = ({ products }) => {
             </Text>
             <Box borderRadius="md" padding={4} backgroundColor="gray.100">
               {cart.map((product) => (
-                <Box marginTop="8px">
+                <Box marginTop="8px" key={product.id}>
                   <Flex key={product.id} justifyContent="space-between" alignItems="center">
                     <Image boxSize="50px" borderRadius="full" objectFit="fill" src={product.imagen} alt={product.producto} />
                     <Text marginLeft={4} >{product.producto}</Text>

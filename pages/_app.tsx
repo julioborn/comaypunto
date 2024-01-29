@@ -10,7 +10,7 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
       {/* @ts-ignore */}
       <Container backgroundColor="black" boxShadow="md" maxWidth="container.xl" padding={4} borderRadius="sm" >
         <VStack>
-          <Image width={300} src="https://res.cloudinary.com/dwz4lcvya/image/upload/v1704900399/don-logo_lp1kvo.png"></Image>
+          <Image width={300} src="https://res.cloudinary.com/dwz4lcvya/image/upload/v1704900399/don-logo_lp1kvo.png" alt=""></Image>
         </VStack>
         <Divider marginY={3} />
         <Component {...pageProps} />
