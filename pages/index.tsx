@@ -100,6 +100,7 @@ const Home: React.FC<Props> = ({ products }) => {
               <Box marginTop="8px">
                 {Boolean(cart.length) && (
                   <Flex justifyContent="center" alignItems="center">
+                    {/* @ts-ignore */}
                     <Button
                       width="80%"
                       size="sm"
