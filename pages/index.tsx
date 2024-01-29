@@ -2,7 +2,7 @@ import { Button, Icon, Grid, Stack, Text, Link, Flex, Image, Box } from '@chakra
 import api from 'comidasya/product/api';
 import { Product } from 'comidasya/product/types';
 import { GetStaticProps } from 'next';
-import React from 'react';
+import React, { useRef } from 'react';
 import Swal from 'sweetalert2';
 import { Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
 import { PiNotePencilBold } from "react-icons/pi";
@@ -16,7 +16,7 @@ interface Props {
 const Home: React.FC<Props> = ({ products }) => {
   const [cart, setCart] = React.useState<Product[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef();
+  const btnRef = useRef<HTMLButtonElement | null>(null);
 
   const addToCart = (product: Product) => {
     setCart((cart) => [...cart, product]);
