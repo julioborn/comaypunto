@@ -190,7 +190,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Text>
                 )}
               </Flex>
-              <Box marginTop="8px">
+              <Box marginTop="8.1px">
                 {Boolean(cart.length) && (
                   // eslint-disable-next-line import/no-unresolved
                   <Flex justifyContent="center" alignItems="center">
