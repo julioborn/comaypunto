@@ -79,7 +79,7 @@ const Home: React.FC<Props> = ({ products }) => {
     <Stack spacing={6 as any}>
       <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(200px, 1fr))">
         {products.map((product) => (
-          <Stack display="flex" borderRadius="md" padding={4} backgroundColor="yellow.200" key={product.id}>
+          <Stack display="flex" borderRadius="md" marginBottom="10px" padding={4} backgroundColor="yellow.200" key={product.id}>
             <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
             <Text fontWeight="700">{product.producto}</Text>
             <Text fontWeight="400">{product.descripcion}</Text>
