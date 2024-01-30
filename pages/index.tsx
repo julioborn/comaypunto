@@ -1,59 +1,109 @@
-import { Button, Icon, Grid, Stack, Text, Link, Flex, Image, Box } from '@chakra-ui/react';
+import {
+  Button,
+  Icon,
+  Grid,
+  Stack,
+  Text,
+  Link,
+  Flex,
+  Image,
+  Box,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { PiNotePencilBold } from 'react-icons/pi';
+import { FiShoppingCart } from 'react-icons/fi';
+import { MdDeleteForever } from 'react-icons/md';
+import 'animate.css/animate.min.css';
+import Swal from 'sweetalert2';
 import api from 'comidasya/product/api';
 import { Product } from 'comidasya/product/types';
 import { GetStaticProps } from 'next';
 import React, { useRef } from 'react';
-import { Drawer, DrawerBody, DrawerOverlay, DrawerContent, DrawerCloseButton, useDisclosure } from '@chakra-ui/react';
-import { PiNotePencilBold } from "react-icons/pi";
-import { FiShoppingCart } from "react-icons/fi";
-import { MdDeleteForever } from "react-icons/md";
-import Swal from 'sweetalert2'
+
+interface CartItem {
+  product: Product;
+  cantidad: number;
+}
 
 interface Props {
   products: Product[];
 }
 
 const Home: React.FC<Props> = ({ products }) => {
-  const [cart, setCart] = React.useState<Product[]>([]);
+  const [cart, setCart] = React.useState<CartItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement | null>(null);
 
   const addToCart = (product: Product) => {
-    setCart((cart) => [...cart, product]);
+    const existingProduct = cart.find((item) => item.product.id === product.id);
+
+    if (existingProduct) {
+      // Si el producto ya está en el carrito, aumenta la cantidad
+      setCart((cart) =>
+        cart.map((item) =>
+          item.product.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+        )
+      );
+    } else {
+      // Si el producto no está en el carrito, agrégalo con cantidad 1
+      setCart((cart) => [...cart, { product, cantidad: 1 }]);
+    }
   };
 
+  const total = React.useMemo(() => {
+    return cart.reduce((total, { product, cantidad }) => total + product.precio * cantidad, 0);
+  }, [cart]);
+
   const removeFromCart = (productId: string) => {
-    setCart((cart) => cart.filter((product) => product.id !== productId));
+    setCart((cart) => cart.filter((item) => item.product.id !== productId));
   };
 
   const text = React.useMemo(
     () =>
       cart
-        .reduce((message, product) => message.concat(`* ${product.producto}: $${product.precio}\n`), ``)
-        .concat(`- Total: $${cart.reduce((total, product) => total + product.precio, 0)}`),
+        .reduce(
+          (message, { product, cantidad }) =>
+            message.concat(`* ${product.producto}: $${product.precio} x ${cantidad}\n`),
+          ''
+        )
+        .concat(`- Total: $${cart.reduce((total, { product, cantidad }) => total + product.precio * cantidad, 0)}`),
     [cart]
   );
 
   return (
-    <Stack>
-      <Grid gridGap={6} templateColumns="repeat(auto-fit, minmax(150px, 1fr))">
+    <Stack spacing={6 as any}>
+      <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(170px, 1fr))">
         {products.map((product) => (
           <Stack display="flex" borderRadius="md" padding={4} backgroundColor="yellow.200" key={product.id}>
             <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
             <Text fontWeight="700">{product.producto}</Text>
             <Text fontWeight="400">{product.descripcion}</Text>
             <Text fontWeight="500">$ {product.precio}</Text>
-            {/* @ts-ignore */}
             <Button
               colorScheme="primary"
-              onClick={() => {addToCart(product);
+              onClick={() => {
+                addToCart(product);
                 Swal.fire({
-                  title: "Producto agregado",
-                  text: "Puedes verlo en el carrito",
-                  icon: "success",
-                  timer: 2000
-                })
-              }}>
+                  title: 'Producto agregado',
+                  text: 'Puedes verlo en el carrito verde',
+                  icon: 'success',
+                  confirmButtonColor: '#D69E2E',
+                  timer: 3500,
+                  toast: true,
+                  showClass: {
+                    popup: 'animate__animated animate__fadeInTopRight',
+                  },
+                  hideClass: {
+                    popup: 'animate__animated animate__fadeOutTopRight',
+                  },
+                });
+              }}
+            >
               Agregar
             </Button>
           </Stack>
@@ -65,7 +115,6 @@ const Home: React.FC<Props> = ({ products }) => {
           <Button width="90px" height="90px" borderRadius="full" colorScheme="green" onClick={onOpen}>
             <Box display="flex" gap="5px">
               <FiShoppingCart size="30px" />
-              <Text fontSize="25px"> {cart.length} </Text>
             </Box>
           </Button>
         </Flex>
@@ -77,18 +126,43 @@ const Home: React.FC<Props> = ({ products }) => {
           <DrawerCloseButton />
           <DrawerBody backgroundColor="yellow.500">
             <Box marginTop="35px" display="flex" flexDirection="column" borderRadius="md" padding={4} backgroundColor="gray.100">
-              <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="lg" fontWeight="bold" marginBottom={2}>
-                Pedido <PiNotePencilBold size="22px" />
+              {/* @ts-ignore */}
+              <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="22px" fontWeight="bold" marginBottom={2}>
+                Pedido <PiNotePencilBold size="25px" />
               </Text>
-              {cart.map((product) => (
+              {cart.map(({ product, cantidad }) => (
                 <Box marginTop="8px" key={product.id}>
-                  <Flex key={product.id} justifyContent="space-between" alignItems="center">
-                    <Image boxSize="50px" borderRadius="full" objectFit="fill" src={product.imagen} alt={product.producto} />
-                    <Text marginLeft={4} >{product.producto}</Text>
-                    <Text color="gray.800">${product.precio}</Text>
+                  <Flex
+                    key={product.id}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    backgroundColor="gray.300"
+                    borderRadius="5px"
+                  >
+                    <Image
+                      marginLeft={3}
+                      marginTop={1.5}
+                      marginBottom={1.5}
+                      boxSize="60px"
+                      borderRadius="full"
+                      objectFit="fill"
+                      src={product.imagen}
+                      alt={product.producto}
+                    />
+                    <Box display="flex" flexDirection="column">
+                      <Text fontSize="17px" fontWeight="bold">
+                        {product.producto}
+                      </Text>
+                      <Text color="gray.800" fontSize="17px">
+                        ${product.precio}
+                      </Text>
+                    </Box>
+                    <Text fontWeight="bold" fontSize="20px">
+                      x{cantidad}
+                    </Text>
                     <Button
                       width="20px"
-                      marginLeft={4}
+                      marginRight={3}
                       borderRadius="full"
                       colorScheme="red"
                       onClick={() => removeFromCart(product.id)}
@@ -98,23 +172,34 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Flex>
                 </Box>
               ))}
-              {/* @ts-ignore */}
+              <Flex justifyContent="center" alignItems="center" marginTop={3}>
+                {Boolean(cart.length) && (
+                  <Text display="flex" gap="5px" fontWeight="bold" fontSize="20px">
+                    Total:
+                    <Text fontWeight="normal">${total}</Text>
+                  </Text>
+                )}
+              </Flex>
               <Flex justifyContent="center" marginTop={4}>
                 {cart.length > 0 ? (
-                  <Button colorScheme="red" size="sm" width="80%" onClick={() => setCart([])}>
-                    Limpiar pedido
+                  <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
+                    Eliminar pedido
                   </Button>
                 ) : (
-                  <Text color="gray.500">Pedido vacío</Text>
+                  <Text color="gray.500" fontSize="20px">
+                    Pedido vacío
+                  </Text>
                 )}
               </Flex>
               <Box marginTop="8px">
                 {Boolean(cart.length) && (
+                  // eslint-disable-next-line import/no-unresolved
                   <Flex justifyContent="center" alignItems="center">
                     {/* @ts-ignore */}
                     <Button
+                      fontSize="17px"
                       width="80%"
-                      size="sm"
+                      size="md"
                       colorScheme="green"
                       as={Link}
                       isExternal
