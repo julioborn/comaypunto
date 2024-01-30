@@ -82,9 +82,9 @@ const Home: React.FC<Props> = ({ products }) => {
         {products.map((product) => (
           <Stack display="flex" borderRadius="md" marginBottom="10px" padding={4} backgroundColor="yellow.200" key={product.id}>
             <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
-            <Text fontWeight="700">{product.producto}</Text>
-            <Text fontWeight="400">{product.descripcion}</Text>
-            <Text fontWeight="500">$ {product.precio}</Text>
+            <Text fontSize="20px" fontWeight="700">{product.producto}</Text>
+            <Text fontSize="17px" fontWeight="400">{product.descripcion}</Text>
+            <Text fontSize="17px" fontWeight="500">$ {product.precio}</Text>
             <Button
               colorScheme="primary"
               onClick={() => {
