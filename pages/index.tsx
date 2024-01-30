@@ -77,7 +77,7 @@ const Home: React.FC<Props> = ({ products }) => {
 
   return (
     <Stack spacing={6 as any}>
-      <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(170px, 1fr))">
+      <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(200px, 1fr))">
         {products.map((product) => (
           <Stack display="flex" borderRadius="md" padding={4} backgroundColor="yellow.200" key={product.id}>
             <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
@@ -94,7 +94,6 @@ const Home: React.FC<Props> = ({ products }) => {
                   icon: 'success',
                   confirmButtonColor: '#D69E2E',
                   timer: 3500,
-                  toast: true,
                   showClass: {
                     popup: 'animate__animated animate__fadeInTopRight',
                   },
@@ -113,7 +112,7 @@ const Home: React.FC<Props> = ({ products }) => {
       {Boolean(cart.length) && (
         <Flex position="fixed" top={4} right={6} justifyContent="center" alignItems="center">
           <Button width="90px" height="90px" borderRadius="full" colorScheme="green" onClick={onOpen}>
-            <Box display="flex" gap="5px">
+            <Box display="flex">
               <FiShoppingCart size="30px" />
             </Box>
           </Button>
