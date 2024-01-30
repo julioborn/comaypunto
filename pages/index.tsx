@@ -76,7 +76,8 @@ const Home: React.FC<Props> = ({ products }) => {
   );
 
   return (
-    <Box>
+    // @ts-ignore
+    <Stack spacing={6}>
       <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(200px, 1fr))">
         {products.map((product) => (
           <Stack display="flex" borderRadius="md" marginBottom="10px" padding={4} backgroundColor="yellow.200" key={product.id}>
@@ -190,7 +191,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Text>
                 )}
               </Flex>
-              <Box marginTop="8px">
+              <Box marginTop="8.1px">
                 {Boolean(cart.length) && (
                   // eslint-disable-next-line import/no-unresolved
                   <Flex justifyContent="center" alignItems="center">
@@ -213,7 +214,7 @@ const Home: React.FC<Props> = ({ products }) => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Box>
+    </Stack>
   );
 };
 
