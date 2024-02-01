@@ -14,6 +14,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
   useDisclosure,
+  Select,
 } from '@chakra-ui/react';
 import { PiNotePencilBold } from 'react-icons/pi';
 import { FiShoppingCart } from 'react-icons/fi';
@@ -34,35 +35,54 @@ interface Props {
   products: Product[];
 }
 
+interface CartItem {
+  product: Product;
+  cantidad: number;
+  option: 'Normal' | 'Doble' | 'Triple';
+}
+
 const Home: React.FC<Props> = ({ products }) => {
   const [cart, setCart] = React.useState<CartItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement | null>(null);
+  const [selectedOption, setSelectedOption] = React.useState<'Normal' | 'Doble' | 'Triple'>('Normal');
 
+  // Agregar al carrito
   const addToCart = (product: Product) => {
-    const existingProduct = cart.find((item) => item.product.id === product.id);
+    const existingProduct = cart.find(
+      (item) => item.product.id === product.id && item.option === selectedOption
+    );
 
     if (existingProduct) {
-      // Si el producto ya está en el carrito, aumenta la cantidad
+      // Si el producto ya está en el carrito con la misma opción, aumenta la cantidad
       setCart((cart) =>
         cart.map((item) =>
-          item.product.id === product.id ? { ...item, cantidad: item.cantidad + 1 } : item
+          item.product.id === product.id && item.option === selectedOption
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
         )
       );
     } else {
-      // Si el producto no está en el carrito, agrégalo con cantidad 1
-      setCart((cart) => [...cart, { product, cantidad: 1 }]);
+      // Si el producto no está en el carrito con la misma opción, agrégalo con cantidad 1
+      setCart((cart) => [...cart, { product, cantidad: 1, option: selectedOption }]);
     }
   };
 
+  // Total del carrito
   const total = React.useMemo(() => {
-    return cart.reduce((total, { product, cantidad }) => total + product.precio * cantidad, 0);
+    return cart.reduce(
+      (total, { product, cantidad, option }) =>
+        total + (product.precio + (option === 'Doble' ? 150 : option === 'Triple' ? 300 : 0)) * cantidad,
+      0
+    );
   }, [cart]);
 
+  // Eliminar individualmente
   const removeFromCart = (productId: string) => {
     setCart((cart) => cart.filter((item) => item.product.id !== productId));
   };
 
+  // Mensaje de Whastapp final
   const text = React.useMemo(
     () =>
       cart
@@ -85,9 +105,19 @@ const Home: React.FC<Props> = ({ products }) => {
             <Text fontSize="20px" fontWeight="700">{product.producto}</Text>
             <Text fontSize="17px" fontWeight="400">{product.descripcion}</Text>
             <Text fontSize="17px" fontWeight="500">$ {product.precio}</Text>
+            <Select
+              backgroundColor="#FFFCEB"
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value as 'Normal' | 'Doble' | 'Triple')}
+            >
+              <option value="Normal">Normal</option>
+              <option value="Doble">Doble (+$150)</option>
+              <option value="Triple">Triple (+$300)</option>
+            </Select>
             <Button
               colorScheme="primary"
               onClick={() => {
+                {/* @ts-ignore */ }
                 addToCart(product);
                 Swal.fire({
                   title: 'Producto agregado',
@@ -130,7 +160,7 @@ const Home: React.FC<Props> = ({ products }) => {
               <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="22px" fontWeight="bold" marginBottom={2}>
                 Pedido <PiNotePencilBold size="25px" />
               </Text>
-              {cart.map(({ product, cantidad }) => (
+              {cart.map(({ product, cantidad, option }) => (
                 <Box marginTop="8px" key={product.id}>
                   <Flex
                     key={product.id}
@@ -153,7 +183,10 @@ const Home: React.FC<Props> = ({ products }) => {
                       <Text fontSize="17px" fontWeight="bold">
                         {product.producto}
                       </Text>
-                      <Text color="gray.800" fontSize="17px">
+                      <Text fontWeight="medium" color="green" >
+                        {option}
+                      </Text>
+                      <Text fontWeight="500" fontSize="17px">
                         ${product.precio}
                       </Text>
                     </Box>
@@ -172,7 +205,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Flex>
                 </Box>
               ))}
-              <Flex justifyContent="center" alignItems="center" marginTop={3}>
+              <Flex justifyContent="center" alignItems="center">
                 {Boolean(cart.length) && (
                   <Text display="flex" gap="5px" fontWeight="bold" fontSize="20px">
                     Total:
