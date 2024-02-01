@@ -17,6 +17,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { PiNotePencilBold } from 'react-icons/pi';
+import { SiWhatsapp } from "react-icons/si";
 import { FiShoppingCart } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
 import 'animate.css/animate.min.css';
@@ -45,26 +46,28 @@ const Home: React.FC<Props> = ({ products }) => {
   const [cart, setCart] = React.useState<CartItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef<HTMLButtonElement | null>(null);
-  const [selectedOption, setSelectedOption] = React.useState<'Normal' | 'Doble' | 'Triple'>('Normal');
+
+  // Use un objeto para mantener el estado individual de cada producto
+  const [selectedOptions, setSelectedOptions] = React.useState<{ [key: string]: 'Normal' | 'Doble' | 'Triple' }>({});
 
   // Agregar al carrito
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, option: 'Normal' | 'Doble' | 'Triple') => {
     const existingProduct = cart.find(
-      (item) => item.product.id === product.id && item.option === selectedOption
+      (item) => item.product.id === product.id && item.option === option
     );
 
     if (existingProduct) {
       // Si el producto ya está en el carrito con la misma opción, aumenta la cantidad
       setCart((cart) =>
         cart.map((item) =>
-          item.product.id === product.id && item.option === selectedOption
+          item.product.id === product.id && item.option === option
             ? { ...item, cantidad: item.cantidad + 1 }
             : item
         )
       );
     } else {
       // Si el producto no está en el carrito con la misma opción, agrégalo con cantidad 1
-      setCart((cart) => [...cart, { product, cantidad: 1, option: selectedOption }]);
+      setCart((cart) => [...cart, { product, cantidad: 1, option }]);
     }
   };
 
@@ -107,18 +110,19 @@ const Home: React.FC<Props> = ({ products }) => {
             <Text fontSize="17px" fontWeight="500">$ {product.precio}</Text>
             <Select
               backgroundColor="#FFFCEB"
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(e.target.value as 'Normal' | 'Doble' | 'Triple')}
+              value={selectedOptions[product.id] || 'Normal'}
+              onChange={(e) => setSelectedOptions({ ...selectedOptions, [product.id]: e.target.value as 'Normal' | 'Doble' | 'Triple' })}
             >
               <option value="Normal">Normal</option>
-              <option value="Doble">Doble (+$150)</option>
-              <option value="Triple">Triple (+$300)</option>
+              <option value="Doble">Doble (${product.doble})</option>
+              {/* @ts-ignore */}
+              <option value="Triple">Triple (${product.triple})</option>
             </Select>
             <Button
               colorScheme="primary"
               onClick={() => {
                 {/* @ts-ignore */ }
-                addToCart(product);
+                addToCart(product, selectedOptions[product.id] || 'Normal');
                 Swal.fire({
                   title: 'Producto agregado',
                   text: 'Puedes verlo en el carrito verde',
@@ -153,7 +157,7 @@ const Home: React.FC<Props> = ({ products }) => {
       <Drawer isOpen={isOpen} placement="right" onClose={onClose} finalFocusRef={btnRef} size="xl">
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
+          <DrawerCloseButton size="20px" marginTop="5px" />
           <DrawerBody backgroundColor="yellow.500">
             <Box marginTop="35px" display="flex" flexDirection="column" borderRadius="md" padding={4} backgroundColor="gray.100">
               {/* @ts-ignore */}
@@ -161,9 +165,10 @@ const Home: React.FC<Props> = ({ products }) => {
                 Pedido <PiNotePencilBold size="25px" />
               </Text>
               {cart.map(({ product, cantidad, option }) => (
-                <Box marginTop="8px" key={product.id}>
+                <Box display="flex" alignItems="center" marginTop="8px" key={product.id}>
                   <Flex
                     key={product.id}
+                    width="100%"
                     justifyContent="space-between"
                     alignItems="center"
                     backgroundColor="gray.300"
@@ -173,24 +178,24 @@ const Home: React.FC<Props> = ({ products }) => {
                       marginLeft={3}
                       marginTop={1.5}
                       marginBottom={1.5}
-                      boxSize="60px"
+                      boxSize="45px"
                       borderRadius="full"
                       objectFit="fill"
                       src={product.imagen}
                       alt={product.producto}
                     />
-                    <Box display="flex" flexDirection="column">
-                      <Text fontSize="17px" fontWeight="bold">
+                    <Box display="flex" flexDirection="column" width="40%">
+                      <Text fontSize="15px" fontWeight="bold">
                         {product.producto}
                       </Text>
-                      <Text fontWeight="medium" color="green" >
+                      <Text fontSize="15px" fontWeight="medium" color="green" mt="-1.5">
                         {option}
                       </Text>
-                      <Text fontWeight="500" fontSize="17px">
+                      <Text fontWeight="500" fontSize="15px">
                         ${product.precio}
                       </Text>
                     </Box>
-                    <Text fontWeight="bold" fontSize="20px">
+                    <Text fontWeight="bold" fontSize="17px">
                       x{cantidad}
                     </Text>
                     <Button
@@ -207,7 +212,7 @@ const Home: React.FC<Props> = ({ products }) => {
               ))}
               <Flex justifyContent="center" alignItems="center">
                 {Boolean(cart.length) && (
-                  <Text display="flex" gap="5px" fontWeight="bold" fontSize="20px">
+                  <Text display="flex" gap="5px" fontWeight="bold" fontSize="20px" mt="10px" >
                     Total:
                     <Text fontWeight="normal">${total}</Text>
                   </Text>
@@ -219,7 +224,7 @@ const Home: React.FC<Props> = ({ products }) => {
                     Eliminar pedido
                   </Button>
                 ) : (
-                  <Text color="gray.500" fontSize="20px">
+                  <Text color="gray.500" fontSize="18px">
                     Pedido vacío
                   </Text>
                 )}
@@ -238,7 +243,7 @@ const Home: React.FC<Props> = ({ products }) => {
                       isExternal
                       href={`https://wa.me/3483521462?text=${encodeURIComponent(text)}`}
                     >
-                      Completar pedido
+                      Completar pedido <Box ml="7px"><SiWhatsapp size="20px" /></Box>
                     </Button>
                   </Flex>
                 )}
@@ -250,6 +255,7 @@ const Home: React.FC<Props> = ({ products }) => {
     </Stack>
   );
 };
+
 
 export const getStaticProps: GetStaticProps = async () => {
   const products = await api.list();

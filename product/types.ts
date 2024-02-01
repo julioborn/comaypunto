@@ -5,4 +5,6 @@ export interface Product {
     descripcion: string;
     imagen: string;
     precio: number;
+    doble: number;
+    triple: number;
 }

@@ -22,12 +22,14 @@ export default {
                                     products.map((product) => ({
                                         ...product,
                                         precio: Number(product.precio),
+                                        doble: Number(product.doble),
+                                        triple: Number(product.triple)
                                     })),
                                 )
                             },
                             error: (error) => reject(error.message)
                         })
-                    })
+                    }),
             )
-    }
+    },
 }
