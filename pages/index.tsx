@@ -100,16 +100,16 @@ const Home: React.FC<Props> = ({ products }) => {
 
   return (
     // @ts-ignore
-    <Stack spacing={6}>
-      <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(200px, 1fr))">
+    <Stack spacing={6} marginRight="-10px" marginLeft="-10px">
+      <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(150px, 1fr))">
         {products.map((product) => (
-          <Stack display="flex" borderRadius="md" marginBottom="10px" padding={4} backgroundColor="yellow.200" key={product.id}>
-            <Image maxHeight={300} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
+          <Stack display="flex" borderRadius="md" marginBottom="10px" padding={2} backgroundColor="yellow.200" key={product.id}>
+            <Image maxHeight={130} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
             <Text fontSize="20px" fontWeight="700">{product.producto}</Text>
             <Text fontSize="17px" fontWeight="400">{product.descripcion}</Text>
             <Text fontSize="17px" fontWeight="500">$ {product.precio}</Text>
             <Select
-              backgroundColor="#FFFCEB"
+              backgroundColor="white"
               value={selectedOptions[product.id] || 'Normal'}
               onChange={(e) => setSelectedOptions({ ...selectedOptions, [product.id]: e.target.value as 'Normal' | 'Doble' | 'Triple' })}
             >
@@ -217,15 +217,15 @@ const Home: React.FC<Props> = ({ products }) => {
                 )}
               </Flex>
               <Flex justifyContent="center" marginTop={4}>
-                  {cart.length > 0 ? (
-                    <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
-                      Eliminar pedido
-                    </Button>
-                  ) : (
-                    <Text color="gray.500" fontSize="18px">
-                      Pedido vacío
-                    </Text>
-                  )}
+                {cart.length > 0 ? (
+                  <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
+                    Eliminar pedido
+                  </Button>
+                ) : (
+                  <Text color="gray.500" fontSize="18px">
+                    Pedido vacío
+                  </Text>
+                )}
               </Flex>
               <Box marginTop="8.1px">
                 {Boolean(cart.length) && (
