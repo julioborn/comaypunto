@@ -103,41 +103,52 @@ const Home: React.FC<Props> = ({ products }) => {
     <Stack spacing={6} marginRight="-10px" marginLeft="-10px">
       <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(150px, 1fr))">
         {products.map((product) => (
-          <Stack display="flex" borderRadius="md" marginBottom="10px" padding={2} backgroundColor="yellow.200" key={product.id}>
-            <Image maxHeight={130} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
-            <Text fontSize="20px" fontWeight="700">{product.producto}</Text>
-            <Text fontSize="17px" fontWeight="400">{product.descripcion}</Text>
-            <Text fontSize="17px" fontWeight="500">$ {product.precio}</Text>
-            <Select
-              backgroundColor="white"
-              value={selectedOptions[product.id] || 'Normal'}
-              onChange={(e) => setSelectedOptions({ ...selectedOptions, [product.id]: e.target.value as 'Normal' | 'Doble' | 'Triple' })}
-            >
-              <option value="Normal">Normal</option>
-              <option value="Doble">Doble ($150)</option>
-              {/* @ts-ignore */}
-              <option value="Triple">Triple ($200)</option>
-            </Select>
-            <Button
-              colorScheme="primary"
-              onClick={() => {
-                {/* @ts-ignore */ }
-                addToCart(product, selectedOptions[product.id] || 'Normal');
-                Swal.fire({
-                  title: 'Producto agregado',
-                  text: 'Puedes verlo en el carrito verde',
-                  icon: 'success',
-                  confirmButtonColor: '#D69E2E',
-                  timer: 2500,
-                  hideClass: {
-                    popup: 'animate__animated animate__fadeOutTopRight',
-                  },
-                });
-              }}
-            >
-              Agregar
-            </Button>
-          </Stack>
+          <Stack
+          display="flex"
+          borderRadius="md"
+          marginBottom="10px"
+          padding={2}
+          backgroundColor="yellow.200"
+          key={product.id}
+          minHeight="150px"  // Establece un tamaño mínimo para cada elemento
+        >
+          <Image maxHeight={130} borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
+          <Text fontSize="20px" fontWeight="700" minHeight="30px"> {product.producto}</Text>
+          <Text fontSize="17px" fontWeight="400" minHeight="50px">{product.descripcion}</Text>
+          <Text fontSize="17px" fontWeight="500">$ {product.precio}</Text>
+          <Select
+            backgroundColor="white"
+            value={selectedOptions[product.id] || 'Normal'}
+            onChange={(e) => setSelectedOptions({ ...selectedOptions, [product.id]: e.target.value as 'Normal' | 'Doble' | 'Triple' })}
+            minHeight="30px" // Establece un tamaño mínimo para el Select
+          >
+            <option value="Normal">Normal</option>
+            <option value="Doble">Doble ($150)</option>
+            {/* @ts-ignore */}
+            <option value="Triple">Triple ($200)</option>
+          </Select>
+          <Button
+            colorScheme="primary"
+            onClick={() => {
+              {/* @ts-ignore */ }
+              addToCart(product, selectedOptions[product.id] || 'Normal');
+              Swal.fire({
+                title: 'Producto agregado',
+                text: 'Puedes verlo en el carrito verde',
+                icon: 'success',
+                confirmButtonColor: '#D69E2E',
+                timer: 2500,
+                hideClass: {
+                  popup: 'animate__animated animate__fadeOutTopRight',
+                },
+              });
+            }}
+            minHeight="30px" // Establece un tamaño mínimo para el botón
+          >
+            Agregar
+          </Button>
+        </Stack>
+        
         ))}
       </Grid>
 
