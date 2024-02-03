@@ -114,9 +114,9 @@ const Home: React.FC<Props> = ({ products }) => {
               onChange={(e) => setSelectedOptions({ ...selectedOptions, [product.id]: e.target.value as 'Normal' | 'Doble' | 'Triple' })}
             >
               <option value="Normal">Normal</option>
-              <option value="Doble">Doble (${product.doble})</option>
+              <option value="Doble">Doble ($150)</option>
               {/* @ts-ignore */}
-              <option value="Triple">Triple (${product.triple})</option>
+              <option value="Triple">Triple ($200)</option>
             </Select>
             <Button
               colorScheme="primary"
@@ -128,10 +128,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   text: 'Puedes verlo en el carrito verde',
                   icon: 'success',
                   confirmButtonColor: '#D69E2E',
-                  timer: 3500,
-                  showClass: {
-                    popup: 'animate__animated animate__fadeInTopRight',
-                  },
+                  timer: 2500,
                   hideClass: {
                     popup: 'animate__animated animate__fadeOutTopRight',
                   },
@@ -154,12 +151,12 @@ const Home: React.FC<Props> = ({ products }) => {
         </Flex>
       )}
 
-      <Drawer isOpen={isOpen} placement="right" onClose={onClose} finalFocusRef={btnRef} size="xl">
+      <Drawer isOpen={isOpen} onClose={onClose} finalFocusRef={btnRef} size="xl">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton size="20px" marginTop="5px" />
-          <DrawerBody backgroundColor="yellow.500">
-            <Box marginTop="35px" display="flex" flexDirection="column" borderRadius="md" padding={4} backgroundColor="gray.100">
+          <DrawerBody justifyContent="center" backgroundColor="yellow.500">
+            <Box marginTop="50px" marginLeft="-13px" marginRight="-13" display="flex" flexDirection="column" borderRadius="md" padding={4} backgroundColor="gray.100">
               {/* @ts-ignore */}
               <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="22px" fontWeight="bold" marginBottom={2}>
                 Pedido <PiNotePencilBold size="25px" />
@@ -169,38 +166,39 @@ const Home: React.FC<Props> = ({ products }) => {
                   <Flex
                     key={product.id}
                     width="100%"
-                    justifyContent="space-between"
+                    justifyContent="space-evenly"
                     alignItems="center"
                     backgroundColor="gray.300"
                     borderRadius="5px"
+                    padding="5px"
                   >
                     <Image
-                      marginLeft={3}
+                      marginLeft={-2}
                       marginTop={1.5}
                       marginBottom={1.5}
-                      boxSize="45px"
+                      boxSize="48px"
                       borderRadius="full"
                       objectFit="fill"
                       src={product.imagen}
                       alt={product.producto}
                     />
                     <Box display="flex" flexDirection="column" width="40%">
-                      <Text fontSize="15px" fontWeight="bold">
+                      <Text fontSize="16px" fontWeight="bold">
                         {product.producto}
                       </Text>
-                      <Text fontSize="15px" fontWeight="medium" color="green" mt="-1.5">
+                      <Text fontSize="15.5px" fontWeight="medium" color="green" mt="-1">
                         {option}
                       </Text>
-                      <Text fontWeight="500" fontSize="15px">
+                      <Text fontWeight="500" fontSize="15.3px">
                         ${product.precio}
                       </Text>
                     </Box>
-                    <Text fontWeight="bold" fontSize="17px">
+                    <Text fontWeight="bold" fontSize="16.5px" >
                       x{cantidad}
                     </Text>
                     <Button
                       width="20px"
-                      marginRight={3}
+                      marginRight={-2}
                       borderRadius="full"
                       colorScheme="red"
                       onClick={() => removeFromCart(product.id)}
@@ -212,22 +210,22 @@ const Home: React.FC<Props> = ({ products }) => {
               ))}
               <Flex justifyContent="center" alignItems="center">
                 {Boolean(cart.length) && (
-                  <Text display="flex" gap="5px" fontWeight="bold" fontSize="20px" mt="10px" >
+                  <Text display="flex" gap="5px" fontWeight="bold" fontSize="20px" mt="10px">
                     Total:
                     <Text fontWeight="normal">${total}</Text>
                   </Text>
                 )}
               </Flex>
               <Flex justifyContent="center" marginTop={4}>
-                {cart.length > 0 ? (
-                  <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
-                    Eliminar pedido
-                  </Button>
-                ) : (
-                  <Text color="gray.500" fontSize="18px">
-                    Pedido vacío
-                  </Text>
-                )}
+                  {cart.length > 0 ? (
+                    <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
+                      Eliminar pedido
+                    </Button>
+                  ) : (
+                    <Text color="gray.500" fontSize="18px">
+                      Pedido vacío
+                    </Text>
+                  )}
               </Flex>
               <Box marginTop="8.1px">
                 {Boolean(cart.length) && (
