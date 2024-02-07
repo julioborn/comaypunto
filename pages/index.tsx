@@ -15,9 +15,10 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Select,
+  Input,
 } from '@chakra-ui/react';
 import { PiNotePencilBold } from 'react-icons/pi';
-import { SiWhatsapp } from "react-icons/si";
+import { SiWhatsapp } from 'react-icons/si';
 import { FiShoppingCart } from 'react-icons/fi';
 import { MdDeleteForever } from 'react-icons/md';
 import 'animate.css/animate.min.css';
@@ -27,11 +28,6 @@ import { Product } from 'comidasya/product/types';
 import { GetStaticProps } from 'next';
 import React, { useRef } from 'react';
 
-interface CartItem {
-  product: Product;
-  cantidad: number;
-}
-
 interface Props {
   products: Product[];
 }
@@ -40,6 +36,8 @@ interface CartItem {
   product: Product;
   cantidad: number;
   option: 'Normal' | 'Doble' | 'Triple';
+  deliveryOption: 'delivery' | 'pickup';
+  deliveryAddress?: string;
 }
 
 const Home: React.FC<Props> = ({ products }) => {
@@ -49,11 +47,22 @@ const Home: React.FC<Props> = ({ products }) => {
 
   // Use un objeto para mantener el estado individual de cada producto
   const [selectedOptions, setSelectedOptions] = React.useState<{ [key: string]: 'Normal' | 'Doble' | 'Triple' }>({});
+  const [deliveryOption, setDeliveryOption] = React.useState<'delivery' | 'pickup'>('delivery');
+  const [deliveryAddress, setDeliveryAddress] = React.useState<string>('');
+
+  // Total del carrito
+  const total = React.useMemo(() => {
+    return cart.reduce(
+      (total, { product, cantidad, option }) =>
+        total + (product.precio + (option === 'Doble' ? 150 : option === 'Triple' ? 200 : 0)) * cantidad,
+      0
+    );
+  }, [cart]);
 
   // Agregar al carrito
   const addToCart = (product: Product, option: 'Normal' | 'Doble' | 'Triple') => {
     const existingProduct = cart.find(
-      (item) => item.product.id === product.id && item.option === option
+      (item) => item.product.id === product.id && item.option === option && item.deliveryOption === deliveryOption
     );
 
     if (existingProduct) {
@@ -67,18 +76,9 @@ const Home: React.FC<Props> = ({ products }) => {
       );
     } else {
       // Si el producto no está en el carrito con la misma opción, agrégalo con cantidad 1
-      setCart((cart) => [...cart, { product, cantidad: 1, option }]);
+      setCart((cart) => [...cart, { product, cantidad: 1, option, deliveryOption, deliveryAddress }]);
     }
   };
-
-  // Total del carrito
-  const total = React.useMemo(() => {
-    return cart.reduce(
-      (total, { product, cantidad, option }) =>
-        total + (product.precio + (option === 'Doble' ? 150 : option === 'Triple' ? 300 : 0)) * cantidad,
-      0
-    );
-  }, [cart]);
 
   // Eliminar individualmente
   const removeFromCart = (productId: string) => {
@@ -86,17 +86,15 @@ const Home: React.FC<Props> = ({ products }) => {
   };
 
   // Mensaje de Whastapp final
-  const text = React.useMemo(
-    () =>
-      cart
-        .reduce(
-          (message, { product, cantidad }) =>
-            message.concat(`* ${product.producto}: $${product.precio} x ${cantidad}\n`),
-          ''
-        )
-        .concat(`- Total: $${cart.reduce((total, { product, cantidad }) => total + product.precio * cantidad, 0)}`),
-    [cart]
-  );
+  const text = React.useMemo(() => {
+    const deliveryInfo = cart.length > 0 ? `Entrega: ${deliveryOption === 'delivery' ? 'A domicilio - ' + deliveryAddress : 'Recoger en persona'}` : '';
+    const productsInfo = cart.reduce(
+      (message, { product, cantidad, option }) =>
+        message.concat(`- ${product.producto} Burguer: $${product.precio} x ${cantidad} (${option})\n`),
+      ''
+    );
+    return `*Pedido:*\n${productsInfo}\nTotal: $${total}\n${deliveryInfo}`;
+  }, [cart, total, deliveryOption, deliveryAddress]);
 
   return (
     // @ts-ignore
@@ -111,14 +109,34 @@ const Home: React.FC<Props> = ({ products }) => {
             backgroundColor="yellow.200"
             key={product.id}
           >
-            <Image height="130px" borderRadius={5} objectFit="cover" src={product.imagen} alt="" />
-            <Text fontSize="20px" fontWeight="700"> 
+            <Image
+              height="130px"
+              borderRadius={5}
+              objectFit="cover"
+              src={product.imagen}
+              alt=""
+              css={{
+                '@media (max-width: 347px)': {
+                  height: '220px',
+                },
+              }}
+            />
+            <Text fontSize="20px" fontWeight="700">
               {product.producto}
             </Text>
-            <Text fontSize="15px" fontWeight="400" height="110px"> {/* Establece la altura para el texto */}
+            <Text
+              fontSize="15px"
+              fontWeight="400"
+              height="110px"
+              css={{
+                '@media (max-width: 347px)': {
+                  height: 'auto',
+                },
+              }}
+            >
               {product.descripcion}
             </Text>
-            <Text fontSize="17px" fontWeight="500"> 
+            <Text fontSize="17px" fontWeight="500">
               $ {product.precio}
             </Text>
             <Select
@@ -128,13 +146,11 @@ const Home: React.FC<Props> = ({ products }) => {
             >
               <option value="Normal">Normal</option>
               <option value="Doble">Doble ($150)</option>
-              {/* @ts-ignore */}
               <option value="Triple">Triple ($200)</option>
             </Select>
             <Button
               colorScheme="primary"
               onClick={() => {
-                {/* @ts-ignore */ }
                 addToCart(product, selectedOptions[product.id] || 'Normal');
                 Swal.fire({
                   title: 'Producto agregado',
@@ -142,6 +158,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   icon: 'success',
                   confirmButtonColor: '#D69E2E',
                   timer: 2500,
+                  toast: true,
                   hideClass: {
                     popup: 'animate__animated animate__fadeOutTopRight',
                   },
@@ -170,7 +187,6 @@ const Home: React.FC<Props> = ({ products }) => {
           <DrawerCloseButton size="20px" marginTop="5px" />
           <DrawerBody justifyContent="center" backgroundColor="yellow.500">
             <Box marginTop="50px" marginLeft="-13px" marginRight="-13" display="flex" flexDirection="column" borderRadius="md" padding={4} backgroundColor="gray.100">
-              {/* @ts-ignore */}
               <Text color="black" display="flex" alignItems="center" gap="5px" fontSize="22px" fontWeight="bold" marginBottom={2}>
                 Pedido <PiNotePencilBold size="25px" />
               </Text>
@@ -206,7 +222,7 @@ const Home: React.FC<Props> = ({ products }) => {
                         ${product.precio}
                       </Text>
                     </Box>
-                    <Text fontWeight="bold" fontSize="16.5px" >
+                    <Text fontWeight="bold" fontSize="16.5px">
                       x{cantidad}
                     </Text>
                     <Button
@@ -220,6 +236,7 @@ const Home: React.FC<Props> = ({ products }) => {
                     </Button>
                   </Flex>
                 </Box>
+
               ))}
               <Flex justifyContent="center" alignItems="center">
                 {Boolean(cart.length) && (
@@ -229,6 +246,38 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Text>
                 )}
               </Flex>
+              <Box
+                display="flex"
+                flexDirection="column"
+                marginTop="8px"
+                justifyContent="center"
+                alignItems="center"
+                alignContent="center"
+                gap="2px"
+              >
+                {/* @ts-ignore */}
+                <Select
+                  border="1.5px solid gray"
+                  textAlign="center"
+                  fontSize="17px"
+                  width="80%"
+                  value={deliveryOption}
+                  onChange={(e) => setDeliveryOption(e.target.value as 'delivery' | 'pickup')}
+                >
+                  <option value="pickup">Buscar en persona</option>
+                  <option value="delivery">Entrega a domicilio</option>
+                </Select>
+                {deliveryOption === 'delivery' && (
+                  <Input
+                    width="80%"
+                    backgroundColor="white"
+                    type="text"
+                    placeholder="Dirección de entrega..."
+                    value={deliveryAddress}
+                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                  />
+                )}
+              </Box>
               <Flex justifyContent="center" marginTop={4}>
                 {cart.length > 0 ? (
                   <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
@@ -242,7 +291,6 @@ const Home: React.FC<Props> = ({ products }) => {
               </Flex>
               <Box marginTop="8.1px">
                 {Boolean(cart.length) && (
-                  // eslint-disable-next-line import/no-unresolved
                   <Flex justifyContent="center" alignItems="center">
                     {/* @ts-ignore */}
                     <Button
@@ -266,7 +314,6 @@ const Home: React.FC<Props> = ({ products }) => {
     </Stack>
   );
 };
-
 
 export const getStaticProps: GetStaticProps = async () => {
   const products = await api.list();
