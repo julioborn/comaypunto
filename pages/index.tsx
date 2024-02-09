@@ -200,6 +200,7 @@ const Home: React.FC<Props> = ({ products }) => {
                     backgroundColor="gray.300"
                     borderRadius="5px"
                     padding="10px"
+                    border="0.5px solid gray"
                   >
                     <Image
                       marginLeft={-2}
@@ -254,12 +255,12 @@ const Home: React.FC<Props> = ({ products }) => {
                   justifyContent="center"
                   alignItems="center"
                   alignContent="center"
-                  gap="2px"
+                  gap="3px"
                 >
                   {/* @ts-ignore */}
                   <Select
                     backgroundColor="gray.200"
-                    border="1.5px solid gray"
+                    border="0.5px solid gray"
                     textAlign="start"
                     fontSize="17px"
                     width="100%"
@@ -271,6 +272,8 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Select>
                   {deliveryOption === 'delivery' && (
                     <Input
+
+                      border="0.5px solid gray"
                       width="100%"
                       backgroundColor="white"
                       type="text"
@@ -281,18 +284,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   )}
                 </Box>
               )}
-              <Flex justifyContent="center" marginTop={4}>
-                {cart.length > 0 ? (
-                  <Button fontSize="17px" colorScheme="red" size="md" width="100%" onClick={() => setCart([])}>
-                    Eliminar pedido
-                  </Button>
-                ) : (
-                  <Text color="gray.500" fontSize="18px">
-                    Pedido vacío
-                  </Text>
-                )}
-              </Flex>
-              <Box marginTop="8.1px">
+              <Box marginTop="15px">
                 {Boolean(cart.length) && (
                   <Flex justifyContent="center" alignItems="center">
                     {/* @ts-ignore */}
@@ -310,6 +302,19 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Flex>
                 )}
               </Box>
+              <Flex justifyContent="center" marginTop={2}>
+                {cart.length > 0 ? (
+                  <Button fontSize="17px" colorScheme="red" size="md" width="100%" onClick={() => setCart([])}>
+                    Eliminar pedido
+                  </Button>
+                ) : (
+                  <Text color="gray.500" fontSize="18px">
+                    Pedido vacío
+                  </Text>
+                )}
+              </Flex>
+
+
             </Box>
           </DrawerBody>
         </DrawerContent>
