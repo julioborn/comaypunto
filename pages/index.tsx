@@ -191,7 +191,7 @@ const Home: React.FC<Props> = ({ products }) => {
                 Pedido <PiNotePencilBold size="25px" />
               </Text>
               {cart.map(({ product, cantidad, option }) => (
-                <Box display="flex" alignItems="center" marginTop="8px" key={product.id}>
+                <Box display="flex" alignItems="center" marginTop="8px" key={product.id} >
                   <Flex
                     key={product.id}
                     width="100%"
@@ -199,7 +199,7 @@ const Home: React.FC<Props> = ({ products }) => {
                     alignItems="center"
                     backgroundColor="gray.300"
                     borderRadius="5px"
-                    padding="5px"
+                    padding="10px"
                   >
                     <Image
                       marginLeft={-2}
@@ -212,17 +212,17 @@ const Home: React.FC<Props> = ({ products }) => {
                       alt={product.producto}
                     />
                     <Box display="flex" flexDirection="column" width="40%">
-                      <Text fontSize="16px" fontWeight="bold">
+                      <Text fontSize="17px" fontWeight="bold">
                         {product.producto}
                       </Text>
-                      <Text fontSize="15.5px" fontWeight="medium" color="green" mt="-1">
+                      <Text fontSize="16px" fontWeight="medium" color="green" mt="-1">
                         {option}
                       </Text>
-                      <Text fontWeight="500" fontSize="15.3px">
+                      <Text fontWeight="500" fontSize="16px">
                         ${product.precio}
                       </Text>
                     </Box>
-                    <Text fontWeight="bold" fontSize="16.5px">
+                    <Text fontWeight="bold" fontSize="17px">
                       x{cantidad}
                     </Text>
                     <Button
@@ -259,9 +259,9 @@ const Home: React.FC<Props> = ({ products }) => {
                   {/* @ts-ignore */}
                   <Select
                     border="1.5px solid gray"
-                    textAlign="center"
+                    textAlign="start"
                     fontSize="17px"
-                    width="80%"
+                    width="100%"
                     value={deliveryOption}
                     onChange={(e) => setDeliveryOption(e.target.value as 'delivery' | 'pickup')}
                   >
@@ -270,7 +270,7 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Select>
                   {deliveryOption === 'delivery' && (
                     <Input
-                      width="80%"
+                      width="100%"
                       backgroundColor="white"
                       type="text"
                       placeholder="Dirección de entrega..."
@@ -282,7 +282,7 @@ const Home: React.FC<Props> = ({ products }) => {
               )}
               <Flex justifyContent="center" marginTop={4}>
                 {cart.length > 0 ? (
-                  <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
+                  <Button fontSize="17px" colorScheme="red" size="md" width="100%" onClick={() => setCart([])}>
                     Eliminar pedido
                   </Button>
                 ) : (
@@ -297,7 +297,7 @@ const Home: React.FC<Props> = ({ products }) => {
                     {/* @ts-ignore */}
                     <Button
                       fontSize="17px"
-                      width="80%"
+                      width="100%"
                       size="md"
                       colorScheme="green"
                       as={Link}
