@@ -258,6 +258,7 @@ const Home: React.FC<Props> = ({ products }) => {
                 >
                   {/* @ts-ignore */}
                   <Select
+                    backgroundColor="gray.200"
                     border="1.5px solid gray"
                     textAlign="start"
                     fontSize="17px"
