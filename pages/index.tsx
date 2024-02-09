@@ -98,13 +98,13 @@ const Home: React.FC<Props> = ({ products }) => {
 
   return (
     // @ts-ignore
-    <Stack spacing={6} marginRight="-10px" marginLeft="-10px">
+    <Stack spacing={6} marginRight="-15px" marginLeft="-15px">
       <Grid gridGap={2} templateColumns="repeat(auto-fit, minmax(150px, 1fr))">
         {products.map((product) => (
           <Stack
             display="flex"
             borderRadius="md"
-            marginBottom="10px"
+            marginBottom="1px"
             padding={2}
             backgroundColor="yellow.200"
             key={product.id}
@@ -246,38 +246,40 @@ const Home: React.FC<Props> = ({ products }) => {
                   </Text>
                 )}
               </Flex>
-              <Box
-                display="flex"
-                flexDirection="column"
-                marginTop="8px"
-                justifyContent="center"
-                alignItems="center"
-                alignContent="center"
-                gap="2px"
-              >
-                {/* @ts-ignore */}
-                <Select
-                  border="1.5px solid gray"
-                  textAlign="center"
-                  fontSize="17px"
-                  width="80%"
-                  value={deliveryOption}
-                  onChange={(e) => setDeliveryOption(e.target.value as 'delivery' | 'pickup')}
+              {Boolean(cart.length) && (
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  marginTop="8px"
+                  justifyContent="center"
+                  alignItems="center"
+                  alignContent="center"
+                  gap="2px"
                 >
-                  <option value="pickup">Buscar en persona</option>
-                  <option value="delivery">Entrega a domicilio</option>
-                </Select>
-                {deliveryOption === 'delivery' && (
-                  <Input
+                  {/* @ts-ignore */}
+                  <Select
+                    border="1.5px solid gray"
+                    textAlign="center"
+                    fontSize="17px"
                     width="80%"
-                    backgroundColor="white"
-                    type="text"
-                    placeholder="Dirección de entrega..."
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                  />
-                )}
-              </Box>
+                    value={deliveryOption}
+                    onChange={(e) => setDeliveryOption(e.target.value as 'delivery' | 'pickup')}
+                  >
+                    <option value="pickup">Buscar en persona</option>
+                    <option value="delivery">Entrega a domicilio</option>
+                  </Select>
+                  {deliveryOption === 'delivery' && (
+                    <Input
+                      width="80%"
+                      backgroundColor="white"
+                      type="text"
+                      placeholder="Dirección de entrega..."
+                      value={deliveryAddress}
+                      onChange={(e) => setDeliveryAddress(e.target.value)}
+                    />
+                  )}
+                </Box>
+              )}
               <Flex justifyContent="center" marginTop={4}>
                 {cart.length > 0 ? (
                   <Button fontSize="17px" colorScheme="red" size="md" width="80%" onClick={() => setCart([])}>
