@@ -106,7 +106,7 @@ const Home: React.FC<Props> = ({ products }) => {
             borderRadius="md"
             marginBottom="1px"
             padding={2}
-            backgroundColor="yellow.200"
+            backgroundColor="#FFE28E"
             key={product.id}
           >
             <Image
@@ -116,7 +116,7 @@ const Home: React.FC<Props> = ({ products }) => {
               src={product.imagen}
               alt=""
               css={{
-                '@media (max-width: 347px)': {
+                '@media (max-width: 338px)': {
                   height: '220px',
                 },
               }}
@@ -129,7 +129,7 @@ const Home: React.FC<Props> = ({ products }) => {
               fontWeight="400"
               height="110px"
               css={{
-                '@media (max-width: 347px)': {
+                '@media (max-width: 338px)': {
                   height: 'auto',
                 },
               }}
